@@ -4,7 +4,26 @@ on:
   pull_request:
 
 jobs:
-  fmt:
+  
+  fmt_prettier:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Run Prettier
+        run: npx prettier -c . '!**/volumes' '!**/dist' '!target' '!**/translations' '!api_tests/pnpm-lock.yaml'
+  
+  fmt_sql:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Format SQL
+        run: ./scripts/sql_format_check.sh
+        
+  fmt_toml:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -12,11 +31,7 @@ jobs:
           submodules: true
       - name: Format TOML
         run: docker run --rm -v $PWD:/data tamasfe/taplo:0.9.3 format --check
-      - name: Format SQL
-        run: ./scripts/sql_format_check.sh
-      - name: Run Prettier
-        run: npx prettier -c . '!**/volumes' '!**/dist' '!target' '!**/translations' '!api_tests/pnpm-lock.yaml'
-
+  
   cargo_fmt:
     runs-on: ubuntu-latest
     steps:
@@ -68,7 +83,7 @@ jobs:
           done
         env:
           PGPASSWORD: password
-      - run: psql -h localhost -U postgres -c "CREATE USER lemmy WITH PASSWORD 'password' SUPERUSER;"
+      - run: psql -h localhost -U lemmy -c "CREATE USER lemmy WITH PASSWORD 'password' SUPERUSER;"
         env:
           PGPASSWORD: password
       - run: cargo test --workspace --no-fail-fast
