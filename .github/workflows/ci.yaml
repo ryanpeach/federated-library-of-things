@@ -7,6 +7,7 @@ jobs:
   
   fmt_prettier:
     runs-on: ubuntu-latest
+    container: tmknom/prettier:3.2.5
     steps:
       - uses: actions/checkout@v4
         with:
@@ -16,6 +17,7 @@ jobs:
   
   fmt_sql:
     runs-on: ubuntu-latest
+    container: backplane/pgformatter
     steps:
       - uses: actions/checkout@v4
         with:
@@ -25,6 +27,7 @@ jobs:
         
   fmt_toml:
     runs-on: ubuntu-latest
+    container: tamasfe/taplo:0.9.3
     steps:
       - uses: actions/checkout@v4
         with:
@@ -61,10 +64,6 @@ jobs:
     services:
       postgres:
         image: postgres:16-alpine
-        env:
-          POSTGRES_DB: lemmy
-          POSTGRES_USER: lemmy
-          POSTGRES_PASSWORD: password
         ports:
           - 5432:5432
     steps:
@@ -82,9 +81,9 @@ jobs:
             sleep 2
           done
         env:
-          PGPASSWORD: password
-      - run: psql -h localhost -U lemmy -c "CREATE USER lemmy WITH PASSWORD 'password' SUPERUSER;"
+          PGPASSWORD: postgres
+      - run: psql -h localhost -c "CREATE USER lemmy WITH PASSWORD 'password' SUPERUSER;"
         env:
-          PGPASSWORD: password
+          PGPASSWORD: postgres
       - run: cargo test --workspace --no-fail-fast
 
