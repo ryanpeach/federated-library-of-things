@@ -15,7 +15,9 @@ jobs:
   
   fmt_sql:
     runs-on: ubuntu-latest
-    container: backplane/pgformatter
+    container: 
+      image: backplane/pgformatter
+      options: --user root
     steps:
       - uses: actions/checkout@v4
       - name: Format SQL
