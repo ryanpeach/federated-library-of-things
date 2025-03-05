@@ -66,6 +66,12 @@ jobs:
           POSTGRES_PASSWORD: password
         ports:
           - 5432:5432
+    env:
+      LEMMY_DATABASE_URL: postgres://lemmy:password@database:5432/lemmy
+      RUST_BACKTRACE: "1"
+      CARGO_HOME: .cargo_home
+      LEMMY_TEST_FAST_FEDERATION: "1"
+      LEMMY_CONFIG_LOCATION: ../../config/config.hjson
     steps:
       - uses: actions/checkout@v4
         with:
