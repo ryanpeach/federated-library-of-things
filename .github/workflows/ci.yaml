@@ -1,0 +1,75 @@
+name: CI Pipeline
+
+on:
+  pull_request:
+
+jobs:
+  fmt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Format TOML
+        run: docker run --rm -v $PWD:/data tamasfe/taplo:0.9.3 format --check
+      - name: Format SQL
+        run: ./scripts/sql_format_check.sh
+      - name: Run Prettier
+        run: npx prettier -c . '!**/volumes' '!**/dist' '!target' '!**/translations' '!api_tests/pnpm-lock.yaml'
+
+  cargo_fmt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          components: rustfmt
+          toolchain: nightly
+      - run: cargo +nightly fmt -- --check
+
+  cargo_clippy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          components: clippy
+          toolchain: 1.81
+      - run: cargo clippy --workspace --tests --all-targets -- -D warnings
+
+  cargo_test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: lemmy
+          POSTGRES_USER: lemmy
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5432:5432
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: 1.81
+      - name: Wait for PostgreSQL
+        run: |
+          for i in {1..30}; do
+            pg_isready -h localhost -U postgres && break
+            echo "Waiting for PostgreSQL..."
+            sleep 2
+          done
+        env:
+          PGPASSWORD: password
+      - run: psql -h localhost -U postgres -c "CREATE USER lemmy WITH PASSWORD 'password' SUPERUSER;"
+        env:
+          PGPASSWORD: password
+      - run: cargo test --workspace --no-fail-fast
+
