@@ -27,12 +27,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Format TOML
-        run: docker run --rm -v $PWD:/data tamasfe/taplo:0.9.3 format --check
+        run: taplo format --check
   
   cargo_fmt:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: true
       - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           components: rustfmt
@@ -43,6 +45,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: true
       - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           components: clippy
