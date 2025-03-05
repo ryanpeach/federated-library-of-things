@@ -67,7 +67,7 @@ jobs:
         ports:
           - 5432:5432
     env:
-      LEMMY_DATABASE_URL: postgres://lemmy:password@database:5432/lemmy
+      LEMMY_DATABASE_URL: postgres://lemmy:password@localhost:5432/lemmy
       RUST_BACKTRACE: "1"
       CARGO_HOME: .cargo_home
       LEMMY_TEST_FAST_FEDERATION: "1"
