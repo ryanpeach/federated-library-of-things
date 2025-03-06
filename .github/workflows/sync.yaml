@@ -28,7 +28,7 @@ jobs:
           git checkout upstream/main
           git remote add ups https://github.com/LemmyNet/lemmy
           git fetch ups
-          git reset --hard ups/main --ff-only
+          git reset --hard ups/main
           git push --force
 
       - name: Create Pull Request
