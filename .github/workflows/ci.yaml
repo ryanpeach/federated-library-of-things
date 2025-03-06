@@ -74,7 +74,7 @@ jobs:
       LEMMY_CONFIG_LOCATION: ../../config/config.hjson
       PGUSER: postgres
       PGPASSWORD: password
-      PGHOST: database
+      PGHOST: localhost
       PGDATABASE: lemmy
     steps:
       - uses: actions/checkout@v4
