@@ -25,11 +25,8 @@ jobs:
 
       - name: Pull Latest Changes from Upstream
         run: |
-          git checkout upstream/main
-          git remote add ups https://github.com/LemmyNet/lemmy
-          git fetch ups
-          git reset --hard ups/main
-          git push --force
+          git remote add upstream https://github.com/LemmyNet/lemmy
+          git fetch --all
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
