@@ -34,6 +34,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           base: main
           branch: upstream/main
+          delete-branch: True
           title: "🔄 Sync LemmyNet/lemmy:main to main"
           body: "This PR merges changes from LemmyNet/lemmy:main into main via origin/upstream/main."
           labels: "sync, automated"
