@@ -72,6 +72,10 @@ jobs:
       CARGO_HOME: .cargo_home
       LEMMY_TEST_FAST_FEDERATION: "1"
       LEMMY_CONFIG_LOCATION: ../../config/config.hjson
+      PGUSER: postgres
+      PGPASSWORD: password
+      PGHOST: database
+      PGDATABASE: lemmy
     steps:
       - uses: actions/checkout@v4
         with:
