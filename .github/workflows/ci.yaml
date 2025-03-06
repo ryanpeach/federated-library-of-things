@@ -61,7 +61,7 @@ jobs:
       postgres:
         image: postgres:16-alpine
         env:
-          POSTGRES_USER: lemmy
+          POSTGRES_USER: postgres
           POSTGRES_DB: lemmy
           POSTGRES_PASSWORD: password
         ports:
@@ -88,6 +88,8 @@ jobs:
           done
         env:
           PGPASSWORD: password
+      - name: Create super user
+        run: psql -c "CREATE USER lemmy WITH PASSWORD 'password' SUPERUSER;"
       - run: cargo test --workspace --no-fail-fast
         env:
           PGPASSWORD: password
